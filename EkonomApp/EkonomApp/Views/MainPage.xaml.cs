@@ -17,7 +17,7 @@ namespace EkonomApp.Views
 
             MasterBehavior = MasterBehavior.Popover;
 
-            MenuPages.Add((int)MenuItemType.Browse, (NavigationPage)Detail);
+            MenuPages.Add((int)MenuItemType.Changes, (NavigationPage) Detail);
         }
 
         public async Task NavigateFromMenu(int id)
@@ -26,11 +26,14 @@ namespace EkonomApp.Views
             {
                 switch (id)
                 {
-                    case (int)MenuItemType.Browse:
-                        MenuPages.Add(id, new NavigationPage(new ItemsPage()));
+                    case (int)MenuItemType.Changes:
+                        MenuPages.Add(id, new NavigationPage(new ChangesPage()));
                         break;
-                    case (int)MenuItemType.About:
-                        MenuPages.Add(id, new NavigationPage(new AboutPage()));
+                    case (int)MenuItemType.Lucky:
+                        MenuPages.Add(id, new NavigationPage(new LuckyPage()));
+                        break;     
+                    case (int)MenuItemType.Options:
+                        MenuPages.Add(id, new NavigationPage(new OptionsPage()));
                         break;
                 }
             }

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CarouselPage xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:views="clr-namespace:EkonomApp.Views"
+            x:Class="EkonomApp.Views.CreatorPage">
+
+    <ContentPage>
+        <StackLayout Padding="5">
+            <Image x:Name="logo" Scale="0.7" Source="Resources/icon.png" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" />
+            <Button TextColor="White" Text="Dalej" BorderColor="#2196f3" BackgroundColor="#0d8aee" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Clicked="Next_Clicked"/>
+            <Label FontSize="Small" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Witaj w aplikacji "/>
+                        <Span Text="Mój Ekonom!" FontSize="Small" FontAttributes="Bold"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </StackLayout>
+    </ContentPage>
+</CarouselPage>

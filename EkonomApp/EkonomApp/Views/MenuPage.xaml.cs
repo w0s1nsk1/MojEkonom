@@ -18,8 +18,9 @@ namespace EkonomApp.Views
 
             menuItems = new List<HomeMenuItem>
             {
-                new HomeMenuItem {Id = MenuItemType.Browse, Title="Browse" },
-                new HomeMenuItem {Id = MenuItemType.About, Title="About" }
+                new HomeMenuItem {Id = MenuItemType.Changes, Title="Zmiany na jutro" },
+                new HomeMenuItem {Id = MenuItemType.Lucky, Title="Szczęśliwa liczba" },
+                new HomeMenuItem {Id = MenuItemType.Options, Title="Ustawienia" },
             };
 
             ListViewMenu.ItemsSource = menuItems;

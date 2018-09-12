@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EkonomApp.Views.OptionsPage"
+             xmlns:vm="clr-namespace:EkonomApp.ViewModels"
+             Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Zapisz" Clicked="Save_Item">
+            <ToolbarItem.Icon>
+                <OnPlatform x:TypeArguments="FileImageSource">
+                    <On Platform="UWP" Value="save.png"/>
+                </OnPlatform>
+            </ToolbarItem.Icon>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <ScrollView Grid.Row="1">
+            <StackLayout Orientation="Vertical" Spacing="10">
+                    <Label Text="Klasa" HorizontalOptions="Center"/>
+                    <Picker x:Name="Classes" Title="Wybierz Klasę" HorizontalOptions="Center" WidthRequest="80"/>
+                <Label Text="Numer" HorizontalOptions="Center"/>
+                <Entry x:Name="Number" Keyboard="Numeric" Placeholder="Podaj swój numer" WidthRequest="80" HorizontalOptions="Center"/>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

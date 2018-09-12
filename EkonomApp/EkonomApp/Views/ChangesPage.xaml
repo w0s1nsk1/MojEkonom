@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:EkonomApp.ViewModels"
+             x:Class="EkonomApp.Views.ChangesPage"
+             Title="{Binding Title}">
+
+    <ContentPage.BindingContext>
+        <vm:ChangesViewModel />
+    </ContentPage.BindingContext>
+
+
+    <StackLayout>
+        <ListView x:Name="ChangesList" ItemsSource="{Binding change}" RefreshCommand="{Binding Refresh}"
+                IsPullToRefreshEnabled="true"
+                IsRefreshing="{Binding IsBusy, Mode=OneWay}" HasUnevenRows="true" VerticalOptions="FillAndExpand">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="80" />
+                            </Grid.RowDefinitions>
+                            <BoxView Color="{Binding Color}" Grid.Column="0" Grid.RowSpan="2"/>
+                            <StackLayout Padding="10">
+                                <Label Text="{Binding Class}" FontSize="30"/>
+                                <Label Text="{Binding Changed}" FontSize="10"/>
+                            </StackLayout>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>
