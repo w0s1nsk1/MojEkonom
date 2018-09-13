@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.w0s1nsk1.ekonomapp" android:installLocation="internalOnly">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.w0s1nsk1.ekonomapp" android:installLocation="internalOnly" android:versionCode="2" android:versionName="1.1">
 	<uses-sdk android:minSdkVersion="10" android:targetSdkVersion="27" />
 	<application android:label="Mój Ekonom" android:icon="@drawable/icon"></application>
 </manifest>

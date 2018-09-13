@@ -33,7 +33,7 @@ namespace EkonomApp.ViewModels
         public int weekday;
         public ChangesViewModel()
         {
-            Title = "Zastępstwa";
+            
             change = new ObservableCollection<ChangeList>();
             Refresh = new Command(async () => await LoadChanges());
             Refresh.Execute("");
@@ -58,6 +58,11 @@ namespace EkonomApp.ViewModels
                 string url = "http://www.zse.srem.pl/index.php?opcja=modules/zastepstwa/view_id&id=" + (weekday + 1);
                 HtmlWeb web = new HtmlWeb();
                 HtmlDocument htmldoc = await Task.Run(() => web.Load(url));
+                var html1 = htmldoc.DocumentNode.SelectSingleNode("//p/b/u/span").InnerHtml;
+                if (html1.Contains("\r\n"))
+                    html1 = html1.Replace("\r\n", " ");
+
+                Title = html1;
                 var htmlNodes = htmldoc.DocumentNode.SelectNodes("//p/span");
                 foreach (var node in htmlNodes)
                 {
