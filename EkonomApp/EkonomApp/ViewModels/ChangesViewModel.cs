@@ -10,9 +10,7 @@ namespace EkonomApp.ViewModels
 {
     public class ChangeList
     {
-        public string Class { get; set; }
         public string Changed { get; set; }
-        public string Color { get; set; }
     }
 
     public class ChangesViewModel : BaseViewModel
@@ -28,13 +26,12 @@ namespace EkonomApp.ViewModels
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<ChangeList> change { get; set; }
+        public ObservableCollection<ChangeList> Change { get; set; }
         public Command Refresh { get; set; }
-        public int weekday;
         public ChangesViewModel()
         {
             
-            change = new ObservableCollection<ChangeList>();
+            Change = new ObservableCollection<ChangeList>();
             Refresh = new Command(async () => await LoadChanges());
             Refresh.Execute("");
         }
@@ -46,40 +43,67 @@ namespace EkonomApp.ViewModels
 
             IsBusy = true;
             
-                change.Clear();
+                Change.Clear();
                 DateTime date = DateTime.Today;
-                weekday = (int)date.DayOfWeek;
-                if (weekday>=5)
+                var weekday = (int)date.DayOfWeek;
+                if ((int)date.DayOfWeek == 5)
                 {
-                    weekday = 0;
+                    date = date.AddDays(3);
                 }
+                if ((int)date.DayOfWeek == 6)
+                {
+                    date = date.AddDays(2);
+                }
+                if ((int)date.DayOfWeek == 7)
+                {
+                    date = date.AddDays(1);
+                }
+                string day = date.Day.ToString().PadLeft(2, '0');
+                string monthday = date.Month.ToString().PadLeft(2, '0');
                 try
                 {
-                string url = "http://www.zse.srem.pl/index.php?opcja=modules/zastepstwa/view_id&id=" + (weekday + 1);
-                HtmlWeb web = new HtmlWeb();
+                string url = "http://www.zse.srem.pl/index.php?opcja=modules/zastepstwa/view_id&id=" + (int)date.DayOfWeek;
+                HtmlWeb web = new HtmlWeb
+                {
+                    CachePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    UsingCache = true
+                };
                 HtmlDocument htmldoc = await Task.Run(() => web.Load(url));
-                var html1 = htmldoc.DocumentNode.SelectSingleNode("//p/b/u/span").InnerHtml;
-                if (html1.Contains("\r\n"))
-                    html1 = html1.Replace("\r\n", " ");
+                var html1 = htmldoc.DocumentNode.SelectNodes("//span[contains(text(),'Zastępstwa na')]");
+                string html1_title = html1[0].InnerHtml;
+                var two = html1.Count;
 
-                Title = html1;
-                var htmlNodes = htmldoc.DocumentNode.SelectNodes("//p/span");
+                if (html1_title.Contains("\r\n"))
+                    html1_title = html1_title.Replace("\r\n", " ");
+                if (html1_title.Contains(day +"."+ monthday + ". "))
+                    html1_title = html1_title.Substring(0,html1_title.IndexOf(day + "." + monthday + ".") +5);
+                Title = html1_title;
+                HtmlNodeCollection htmlNodes;
+                if (two != 1)
+                {
+                    htmlNodes = htmldoc.DocumentNode.SelectNodes("//span/p/span");
+                }
+                else
+                {
+                    htmlNodes = htmldoc.DocumentNode.SelectNodes("//p/span");
+                }
                 foreach (var node in htmlNodes)
                 {
                     string line = node.InnerHtml;
                     if(line.Contains("\r\n"))
                         line = line.Replace("\r\n", " ");
+                    if (line.Contains(monthday + "."))
+                        line = line.Replace(monthday + ".", monthday);
                     if (line.IndexOf(" l.") != -1)
                     {
                             string Class = line.Substring(0, line.IndexOf(" l."));
                             Class = Class.Substring(4);
                             line = line.Substring(line.IndexOf(" l.") + 1);
-                            if (Class.ToLower() != Class1)
-                                change.Add(new ChangeList() { Changed = line, Class = Class, Color = "#fff" });
-                            else
-                                change.Add(new ChangeList() { Changed = line, Class = Class, Color = "#90ee90" });
+                        if (Class.ToLower() == Class1)
+                            Change.Add(new ChangeList() { Changed = line});
                     }
                 }
+
             }
             catch (Exception ex)
             {

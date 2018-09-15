@@ -11,20 +11,15 @@
 
 
     <StackLayout>
-        <ListView x:Name="ChangesList" ItemsSource="{Binding change}" RefreshCommand="{Binding Refresh}"
+        <ListView x:Name="ChangesList" ItemsSource="{Binding Change}" RefreshCommand="{Binding Refresh}"
                 IsPullToRefreshEnabled="true"
                 IsRefreshing="{Binding IsBusy, Mode=OneWay}" HasUnevenRows="true" VerticalOptions="FillAndExpand">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
                         <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="80" />
-                            </Grid.RowDefinitions>
-                            <BoxView Color="{Binding Color}" Grid.Column="0" Grid.RowSpan="2"/>
                             <StackLayout Padding="10">
-                                <Label Text="{Binding Class}" FontSize="30"/>
-                                <Label Text="{Binding Changed}" FontSize="10"/>
+                                <Label Text="{Binding Changed}" FontSize="20"/>
                             </StackLayout>
                         </Grid>
                     </ViewCell>

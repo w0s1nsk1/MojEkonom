@@ -29,9 +29,6 @@ namespace EkonomApp.Views
                     case (int)MenuItemType.Changes:
                         MenuPages.Add(id, new NavigationPage(new ChangesPage()));
                         break;
-                    case (int)MenuItemType.Lucky:
-                        MenuPages.Add(id, new NavigationPage(new LuckyPage()));
-                        break;     
                     case (int)MenuItemType.Options:
                         MenuPages.Add(id, new NavigationPage(new OptionsPage()));
                         break;

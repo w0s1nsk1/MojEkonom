@@ -1,4 +1,5 @@
-﻿using EkonomApp.Helpers;
+﻿using Android.Widget;
+using EkonomApp.Helpers;
 using HtmlAgilityPack;
 using System;
 
@@ -46,45 +47,50 @@ namespace EkonomApp.Views
         public OptionsPage()
         {
             InitializeComponent();
-            Number.Text = LuckNumber;
-            string url = "http://www.zse.srem.pl/plan_lekcji/a/lista.html";
-            HtmlWeb web = new HtmlWeb();
-            HtmlDocument htmldoc = web.Load(url);
-            var htmlNodes = htmldoc.DocumentNode.SelectNodes("//li/a");
-            int i = 0;
-            foreach (var node in htmlNodes)
+                        string url = "http://www.zse.srem.pl/plan_lekcji/a/lista.html";
+            string xpath = "//ul";
+            HtmlWeb web = new HtmlWeb
             {
-                string line = node.InnerHtml;
-                if (line == "P.Karliński (PK)")
-                    break;
-                int x = Int32.Parse(line.Substring(0, 1));
-                switch (x)
+                CachePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                UsingCache = true
+            };
+            HtmlDocument htmldoc = web.Load(url);
+            var classes = htmldoc.DocumentNode.SelectSingleNode(xpath);
+            xpath = "//li/a";
+            htmldoc.LoadHtml(classes.InnerHtml);
+            var htmlNodes = htmldoc.DocumentNode.SelectNodes(xpath);
+                for(int i=0;i<htmlNodes.Count;i++)
                 {
-                    case 1:
-                        line = "I " + line.Substring(1);
-                        break;
-                    case 2:
-                        line = "II " + line.Substring(1);
-                        break;
-                    case 3:
-                        line = "III " + line.Substring(1);
-                        break;
-                    case 4:
-                        line = "IV " + line.Substring(1);
-                        break;
+                    string line = htmlNodes[i].InnerHtml;
+                    int x = int.Parse(line.Substring(0, 1));
+                    switch (x)
+                    {
+                        case 1:
+                            line = "I " + line.Substring(1);
+                            break;
+                        case 2:
+                            line = "II " + line.Substring(1);
+                            break;
+                        case 3:
+                            line = "III " + line.Substring(1);
+                            break;
+                        case 4:
+                            line = "IV " + line.Substring(1);
+                            break;
+                    }
+                    Classes.Items.Add(line);
+                    if (line.ToLower() == Class)
+                    {
+                        Classes.SelectedIndex = i;
+                    }
                 }
-                Classes.Items.Add(line);
-                i++;
-                if (line.ToLower() == Class)
-                {
-                    Classes.SelectedIndex = i;
-                }
-            } 
+                Number.Text = LuckNumber;
         }
         public void Save_Item(object sender, EventArgs e)
         {
             LuckNumber = Number.Text;
             Class = Classes.Items[Classes.SelectedIndex].ToLower();
+            XFToast.ShortMessage("Pomyślnie zapisano!");
         }
     }
 }
