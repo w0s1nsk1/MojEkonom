@@ -46,15 +46,12 @@ namespace EkonomApp.ViewModels
                 Change.Clear();
                 DateTime date = DateTime.Today;
                 var weekday = (int)date.DayOfWeek;
-                if ((int)date.DayOfWeek == 5)
+                if ((int)date.DayOfWeek >= 5)
                 {
-                    date = date.AddDays(3);
+                    int ile = 8 - (int)date.DayOfWeek;
+                    date = date.AddDays(ile);
                 }
-                if ((int)date.DayOfWeek == 6)
-                {
-                    date = date.AddDays(2);
-                }
-                if ((int)date.DayOfWeek == 7)
+                else
                 {
                     date = date.AddDays(1);
                 }
@@ -75,7 +72,7 @@ namespace EkonomApp.ViewModels
 
                 if (html1_title.Contains("\r\n"))
                     html1_title = html1_title.Replace("\r\n", " ");
-                if (html1_title.Contains(day +"."+ monthday + ". "))
+                if (html1_title.Contains(day +"."+ monthday + "."))
                     html1_title = html1_title.Substring(0,html1_title.IndexOf(day + "." + monthday + ".") +5);
                 Title = html1_title;
                 HtmlNodeCollection htmlNodes;
@@ -103,15 +100,15 @@ namespace EkonomApp.ViewModels
                             Change.Add(new ChangeList() { Changed = line});
                     }
                 }
-
+                if(Change.Count==0)
+                {
+                    Change.Add(new ChangeList() { Changed = "Brak zmian dla twojej klasy 😞" });
+                }
+                IsBusy = false;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-            }
-            finally
-            {
-                IsBusy = false;
             }
         }
     }

@@ -6,8 +6,8 @@ namespace EkonomApp.Models
 {
     public enum MenuItemType
     {
-        Lucky,
         Changes,
+        Schedule,
         Options
     }
     public class HomeMenuItem

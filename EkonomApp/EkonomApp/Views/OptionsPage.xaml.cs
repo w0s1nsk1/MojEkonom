@@ -1,5 +1,4 @@
-﻿using Android.Widget;
-using EkonomApp.Helpers;
+﻿using EkonomApp.Helpers;
 using HtmlAgilityPack;
 using System;
 

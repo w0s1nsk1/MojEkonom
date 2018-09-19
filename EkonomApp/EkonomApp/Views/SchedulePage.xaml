@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:EkonomApp.ViewModels"
+             x:Class="EkonomApp.Views.SchedulePage"
+             Title="Plan Lekcji">
+    <ContentPage.BindingContext>
+        <vm:ScheduleViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="VerticalOptions" Value="Center" />
+                <Setter Property="HorizontalOptions" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <StackLayout>
+        <ListView ItemsSource="{Binding Schedule}" RefreshCommand="{Binding Refresh}"
+                IsPullToRefreshEnabled="true" IsRefreshing="{Binding IsBusy, Mode=OneWay}" HasUnevenRows="true" VerticalOptions="FillAndExpand">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="7*" />
+                                <ColumnDefinition Width="3*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="0.01*" />
+                                <RowDefinition Height="0.01*" />
+                                <RowDefinition Height="0.02*" />
+                            </Grid.RowDefinitions>
+                            <StackLayout Grid.ColumnSpan="2">
+                                <Label Text="{Binding Hour}" TextColor="Gray" FontSize="10"/>
+                            </StackLayout>
+                            <StackLayout Grid.Row="1">
+                                <Label Text="Lekcja:" TextColor="Gray" FontSize="15"/>
+                            </StackLayout >
+                            <StackLayout Grid.Column="1" Grid.Row="1" >
+                                <Label  Text="Sala:" TextColor="Gray" FontSize="15"/>
+                            </StackLayout>
+                            <StackLayout Grid.Row="2">
+                                <Label  Text="{Binding Subject}" FontSize="30"/>
+                            </StackLayout>
+                            <StackLayout Grid.Column="1" Grid.Row="2" >
+                                <Label Text="{Binding Classroom}" FontSize="30"/>
+                            </StackLayout>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>

@@ -19,6 +19,7 @@ namespace EkonomApp.Views
             menuItems = new List<HomeMenuItem>
             {
                 new HomeMenuItem {Id = MenuItemType.Changes, Title="Zastępstwa" },
+                new HomeMenuItem {Id = MenuItemType.Schedule, Title="Plan Lekcji" },
                 new HomeMenuItem {Id = MenuItemType.Options, Title="Ustawienia" }
             };
 

@@ -22,6 +22,7 @@ namespace EkonomApp.Helpers
         private const string SettingsKey = "First_Run";
         private const string SettingsKey1 = "Number";
         private const string SettingsKey2 = "Class";
+        private const string SettingsKey3 = "Group";
         private static readonly string SettingsDefault = "yes";
         #endregion
 
@@ -38,6 +39,17 @@ namespace EkonomApp.Helpers
             }
         }
         public static string Number
+        {
+            get
+            {
+                return AppSettings.GetValueOrDefault(SettingsKey1, string.Empty);
+            }
+            set
+            {
+                AppSettings.AddOrUpdateValue(SettingsKey1, value);
+            }
+        }
+        public static string Group
         {
             get
             {
