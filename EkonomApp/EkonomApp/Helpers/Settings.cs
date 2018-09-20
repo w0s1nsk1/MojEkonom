@@ -22,7 +22,7 @@ namespace EkonomApp.Helpers
         private const string SettingsKey = "First_Run";
         private const string SettingsKey1 = "Number";
         private const string SettingsKey2 = "Class";
-        private const string SettingsKey3 = "Group";
+        private const string SettingsKey3 = "ClassNumber";
         private static readonly string SettingsDefault = "yes";
         #endregion
 
@@ -49,15 +49,15 @@ namespace EkonomApp.Helpers
                 AppSettings.AddOrUpdateValue(SettingsKey1, value);
             }
         }
-        public static string Group
+        public static string ClassNumber
         {
             get
             {
-                return AppSettings.GetValueOrDefault(SettingsKey1, string.Empty);
+                return AppSettings.GetValueOrDefault(SettingsKey3, string.Empty);
             }
             set
             {
-                AppSettings.AddOrUpdateValue(SettingsKey1, value);
+                AppSettings.AddOrUpdateValue(SettingsKey3, value);
             }
         }
         public static string Class

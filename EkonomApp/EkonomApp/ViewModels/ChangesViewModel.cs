@@ -66,12 +66,10 @@ namespace EkonomApp.ViewModels
                     UsingCache = true
                 };
                 HtmlDocument htmldoc = await Task.Run(() => web.Load(url));
-                var html1 = htmldoc.DocumentNode.SelectNodes("//span[contains(text(),'Zastępstwa na')]");
+                var html1 = htmldoc.DocumentNode.SelectNodes("//span[contains(text(),'Zastępstwa')]");
                 string html1_title = html1[0].InnerHtml;
                 var two = html1.Count;
-
-                if (html1_title.Contains("\r\n"))
-                    html1_title = html1_title.Replace("\r\n", " ");
+                html1_title = html1_title.Replace("\r\n", " ");
                 if (html1_title.Contains(day +"."+ monthday + "."))
                     html1_title = html1_title.Substring(0,html1_title.IndexOf(day + "." + monthday + ".") +5);
                 Title = html1_title;
@@ -102,7 +100,7 @@ namespace EkonomApp.ViewModels
                 }
                 if(Change.Count==0)
                 {
-                    Change.Add(new ChangeList() { Changed = "Brak zmian dla twojej klasy 😞" });
+                    Change.Add(new ChangeList() { Changed = "Brak zastępstw dla twojej klasy 😞" });
                 }
                 IsBusy = false;
             }

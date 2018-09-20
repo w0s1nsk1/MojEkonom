@@ -14,6 +14,9 @@ namespace EkonomApp.ViewModels
         public string Hour { get; set; }
         public string Subject { get; set; }
         public string Classroom { get; set; }
+        public string Group { get; set; }
+        public int Width { get; set; }
+        public bool Visible { get; set; }
     }
 
     public class ScheduleViewModel : BaseViewModel
@@ -29,14 +32,14 @@ namespace EkonomApp.ViewModels
                 OnPropertyChanged();
             }
         }
-        public string Group
+        public string ClassNumber
         {
-            get { return Settings.Group; }
+            get { return Settings.ClassNumber; }
             set
             {
-                if (Settings.Group == value)
+                if (Settings.ClassNumber == value)
                     return;
-                Settings.Group = value;
+                Settings.ClassNumber = value;
                 OnPropertyChanged();
             }
         }
@@ -59,85 +62,143 @@ namespace EkonomApp.ViewModels
                 {
                     Schedule.Clear();
                     DateTime date = DateTime.Today;
-                    int weekday = (int)date.DayOfWeek;
-                    string url = "http://www.zse.srem.pl/plan_lekcji/b/plany/o5.html";
+                    
+                    
+                    string url = "http://www.zse.srem.pl/index.php?opcja=modules/plan_lekcji/pokaz_plan";
                     HtmlWeb web = new HtmlWeb
                     {
                     CachePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                     UsingCache = true
                     };
+                    HtmlDocument version = await Task.Run(() => web.Load(url));
+                    var versionNode = version.DocumentNode.SelectSingleNode("//div[@class='col-md-12']/a");
+                    url = versionNode.GetAttributeValue("href", "http://www.zse.srem.pl/plan_lekcji/b/index.html");
+                    url = url.Replace("index", "plany/o" + ClassNumber);
+                    Debug.WriteLine(url);
                     HtmlDocument htmldoc = await Task.Run(() => web.Load(url));
                     htmldoc.DocumentNode.InnerHtml = htmldoc.DocumentNode.OuterHtml.Replace("<br>", ";");
-                    var htmlNodes = htmldoc.DocumentNode.SelectNodes("//td[@class='l']["+weekday+"]");
-                    var hoursNodes = htmldoc.DocumentNode.SelectNodes("//td[@class='g']");
-                    var hours = new string[10];
-                    int i1 = 0;
-                    foreach (var node in hoursNodes)
+                    
+                    var hours = htmldoc.DocumentNode.SelectNodes("//td[@class='g']").ToArray();
+                    int hour = int.Parse(hours.Last().InnerHtml.Substring(0, 2));
+                    if(date.Hour>=hour)
                     {
-                        hours[i1] = node.InnerText.Replace("- ","-");
-                        hours[i1] = hours[i1].Replace("-", " - ");
-                        i1++;
+                        date.AddDays(1);
                     }
-                    i1 = 0;
-                    foreach (var node in htmlNodes)
+                    int weekday = (int)date.DayOfWeek;
+                    if (weekday >= 5)
+                        weekday = 8 - weekday;
+                    if (weekday == 0)
+                        weekday = 1;
+                    for(int i=0;i<hours.Count();i++)
                     {
-                        if(node.InnerText != "&nbsp;")
+                        hours[i].InnerHtml.Replace("- ","-");
+                        hours[i].InnerHtml.Replace("-"," - ");
+                    }
+                    var htmlNodes = htmldoc.DocumentNode.SelectNodes("//td[@class='l'][" + weekday + "]").ToArray();
+                    for(int i=0;i<htmlNodes.Count();i++)
+                    {
+                        var node = htmlNodes[i];
+                        if(node.InnerText != "&nbsp;") 
                         {
                             if (node.InnerText.Contains(";"))
                             {
                                 Debug.WriteLine(node.InnerText);
                                 string[] lessons = node.InnerText.Split(';');
-                                for (int i = 0; i < lessons.Length; i++)
+                                string subject = string.Empty;
+                                string classroom = string.Empty;
+                                string group = string.Empty;
+                                for (int i1 = 0; i1 < lessons.Length; i1++)
                                 {
-                                    string[] lesson = lessons[i].Split(' ');
-                                    string subject;
-                                    if (lesson[0].Length!=5)
-                                        subject = lesson[0];
-                                    else
+                                    
+                                    string[] lesson = lessons[i1].Split(' ');
+                                    if (lesson[0].Length==5)
                                     {
-                                        subject = lesson[0]+lesson[1];
+                                        lesson[0] = lesson[0]+lesson[1];
                                         lesson[2] = lesson[3];
                                     }
-                                    if (subject.Contains('-'))
+                                    if (lesson[0].Contains("r_"))
+                                        lesson[0] = lesson[0].Replace("r_", "r. ");
+                                    if (lesson[0].Contains("r_"))
+                                        lesson[0] = lesson[0].Replace("wf", "w-f");
+                                    if (lesson[0].Contains("j."))
+                                        lesson[0] = lesson[0].Replace("j.", "j. ");
+                                    if (lesson[0].Contains("ang_k"))
+                                        lesson[0] = lesson[0].Replace("ang_k", "angielski");
+                                    if (lesson[0].Contains("informat."))
+                                        lesson[0] = lesson[0].Replace("informat.", "informatyka");
+                                    if (lesson[0].Contains("niem_d"))
+                                        lesson[0] = lesson[0].Replace("niem_d", "niemiecki");
+                                if (lesson[0].Contains('-'))
                                     {
-                                        string[] grplesson = subject.Split('-');
-                                        subject = grplesson[0];
-                                        string group = grplesson[1];
-                                        Debug.WriteLine(group);
-                                        if (group == "1/2")
-                                        {
-                                            string classroom = lesson[2];
-                                            Schedule.Add(new ScheduleList() { Hour = hours[i1], Subject = subject, Classroom = classroom });
-                                            break;
-                                        }
+                                        string[] grplesson = lesson[0].Split('-');
+                                        
+                                        if (!string.IsNullOrWhiteSpace(subject))
+                                            subject = subject + "\n" + grplesson[0];
+                                        else
+                                            subject = grplesson[0];
+                                        if (!string.IsNullOrWhiteSpace(group))
+                                            group = group + "\n" + grplesson[1];
+                                        else
+                                            group = grplesson[1];
+                                        if (!string.IsNullOrWhiteSpace(classroom))
+                                            classroom = classroom + "\n" + lesson[2];
+                                        else
+                                            classroom = lesson[2];
                                     }
                                 }
-                            }
+                                if(group.Contains("/"))
+                                    Schedule.Add(new ScheduleList() { Hour = hours[i].InnerText, Subject = subject, Group = group, Classroom = classroom, Visible = true, Width = 1 });
+                                else
+                                Schedule.Add(new ScheduleList() { Hour = hours[i].InnerText, Subject = subject, Classroom = classroom, Visible = false, Width = 2 });
+                        }
                             else
                             {
                                 string[] lesson = node.InnerText.Split(' ');
+                                if (lesson.Length != 3)
+                                {
+                                    lesson[0] = lesson[0] + lesson[1];
+                                    lesson[2] = lesson[3];
+                                }
+                                if (lesson[0].Contains("r_"))
+                                    lesson[0] = lesson[0].Replace("wf", "w-f");
+                                if (lesson[0].Contains("r_"))
+                                    lesson[0] = lesson[0].Replace("r_", "r. ");
+                                if (lesson[0].Contains("j."))
+                                    lesson[0] = lesson[0].Replace("j.", "j. ");
+                                if (lesson[0].Contains("u_hist.isp."))
+                                    lesson[0] = lesson[0].Replace("u_hist.isp.", "historia i społeczeństwo");
+                                if (lesson[0].Contains("zaj.wych"))
+                                    lesson[0] = lesson[0].Replace("zaj.wych", "zajęcia wychowawcze");
                                 string subject = lesson[0];
                                 if (subject.Contains('-'))
                                 {
                                     string[] grplesson = subject.Split('-');
+                                    if (grplesson[0].Contains("ang_k"))
+                                        grplesson[0] = grplesson[0].Replace("ang_k", "angielski");
+                                    if (grplesson[0].Contains("informat."))
+                                        grplesson[0] = grplesson[0].Replace("informat.", "informatyka");
+                                    if (grplesson[0].Contains("niem_d"))
+                                        grplesson[0] = grplesson[0].Replace("niem_d", "niemiecki");
                                     subject = grplesson[0];
                                     string group = grplesson[1];
-                                    if (group == "1/2")
-                                    {
-                                        string classroom = lesson[2];
-                                        Schedule.Add(new ScheduleList() { Hour = hours[i1], Subject = subject, Classroom = classroom });
-                                    }
+                                    string classroom = lesson[2];
+                                    Schedule.Add(new ScheduleList() { Hour = hours[i].InnerText, Subject = subject,Group = group, Classroom = classroom, Visible = true,Width= 1 });
                                 }
                                 else
                                 {
+
+                                    	
                                     string classroom = lesson[2];
-                                    Schedule.Add(new ScheduleList() { Hour = hours[i1], Subject = subject, Classroom = classroom });
+                                    Schedule.Add(new ScheduleList() { Hour = hours[i].InnerText, Subject = subject, Classroom = classroom, Visible= false, Width = 2 });
                                 }
                             }
                         }
-                        i1++;
                     }
-                    
+                    var weekNodes = htmldoc.DocumentNode.SelectNodes("//th[not(text()='Nr')][not(text()='Godz')]").ToArray();
+                    if (weekday != 3)
+                        Title = "Plan Lekcji na " + weekNodes[weekday-1].InnerText;
+                    else
+                        Title = "Plan Lekcji na " + weekNodes[weekday-1].InnerText.Replace('a', 'ę');
                 IsBusy = false;
             }
             catch (Exception ex)

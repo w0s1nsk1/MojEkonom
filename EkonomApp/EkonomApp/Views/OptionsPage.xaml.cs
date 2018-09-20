@@ -21,6 +21,17 @@ namespace EkonomApp.Views
                 OnPropertyChanged();
             }
         }
+        public string ClassNumber
+        {
+            get { return Settings.ClassNumber; }
+            set
+            {
+                if (Settings.ClassNumber == value)
+                    return;
+                Settings.ClassNumber = value;
+                OnPropertyChanged();
+            }
+        }
         public string Class
         {
             get { return Settings.Class; }
@@ -89,6 +100,7 @@ namespace EkonomApp.Views
         {
             LuckNumber = Number.Text;
             Class = Classes.Items[Classes.SelectedIndex].ToLower();
+            ClassNumber = (Classes.SelectedIndex+1).ToString();
             XFToast.ShortMessage("Pomyślnie zapisano!");
         }
     }

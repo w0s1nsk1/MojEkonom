@@ -23,9 +23,9 @@
         <ScrollView Grid.Row="1">
             <StackLayout Orientation="Vertical" Spacing="10">
                     <Label Text="Klasa" HorizontalOptions="Center"/>
-                    <Picker x:Name="Classes" Title="Wybierz Klasę" HorizontalOptions="Center" WidthRequest="80"/>
+                <Picker x:Name="Classes" Title="Wybierz Klasę" HorizontalOptions="Center" WidthRequest="80"/>
                 <Label Text="Numer" HorizontalOptions="Center"/>
-                <Entry x:Name="Number" Keyboard="Numeric" Placeholder="Podaj swój numer" WidthRequest="80" HorizontalOptions="Center"/>
+                <Entry x:Name="Number" Keyboard="Numeric" Placeholder="Podaj swój numer" MaxLength="2" WidthRequest="80" HorizontalOptions="Center"/>
             </StackLayout>
         </ScrollView>
     </Grid>
