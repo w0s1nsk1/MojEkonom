@@ -21,28 +21,7 @@ namespace EkonomApp.ViewModels
 
     public class ScheduleViewModel : BaseViewModel
     {
-        public string Class1
-        {
-            get { return Settings.Class; }
-            set
-            {
-                if (Settings.Class == value)
-                    return;
-                Settings.Class = value;
-                OnPropertyChanged();
-            }
-        }
-        public string ClassNumber
-        {
-            get { return Settings.ClassNumber; }
-            set
-            {
-                if (Settings.ClassNumber == value)
-                    return;
-                Settings.ClassNumber = value;
-                OnPropertyChanged();
-            }
-        }
+        
         public ObservableCollection<ScheduleList> Schedule { get; set; }
         public Command Refresh { get; set; }
         public ScheduleViewModel()
@@ -62,8 +41,9 @@ namespace EkonomApp.ViewModels
                 {
                     Schedule.Clear();
                     DateTime date = DateTime.Today;
-                    
-                    
+                    string ClassNumber = Xamarin.Forms.Application.Current.Properties["ClassNumber"].ToString();
+
+
                     string url = "http://www.zse.srem.pl/index.php?opcja=modules/plan_lekcji/pokaz_plan";
                     HtmlWeb web = new HtmlWeb
                     {
@@ -80,14 +60,13 @@ namespace EkonomApp.ViewModels
                     
                     var hours = htmldoc.DocumentNode.SelectNodes("//td[@class='g']").ToArray();
                     int hour = int.Parse(hours.Last().InnerHtml.Substring(0, 2));
+                    
                     if(date.Hour>=hour)
                     {
                         date.AddDays(1);
                     }
                     int weekday = (int)date.DayOfWeek;
-                    if (weekday >= 5)
-                        weekday = 8 - weekday;
-                    if (weekday == 0)
+                    if (weekday == 6|| weekday == 0)
                         weekday = 1;
                     for(int i=0;i<hours.Count();i++)
                     {
@@ -118,8 +97,6 @@ namespace EkonomApp.ViewModels
                                     }
                                     if (lesson[0].Contains("r_"))
                                         lesson[0] = lesson[0].Replace("r_", "r. ");
-                                    if (lesson[0].Contains("r_"))
-                                        lesson[0] = lesson[0].Replace("wf", "w-f");
                                     if (lesson[0].Contains("j."))
                                         lesson[0] = lesson[0].Replace("j.", "j. ");
                                     if (lesson[0].Contains("ang_k"))
@@ -131,7 +108,8 @@ namespace EkonomApp.ViewModels
                                 if (lesson[0].Contains('-'))
                                     {
                                         string[] grplesson = lesson[0].Split('-');
-                                        
+                                        if (grplesson[0].Contains("wf"))
+                                            grplesson[0] = grplesson[0].Replace("wf", "W-f");
                                         if (!string.IsNullOrWhiteSpace(subject))
                                             subject = subject + "\n" + grplesson[0];
                                         else
@@ -160,19 +138,21 @@ namespace EkonomApp.ViewModels
                                     lesson[2] = lesson[3];
                                 }
                                 if (lesson[0].Contains("r_"))
-                                    lesson[0] = lesson[0].Replace("wf", "w-f");
-                                if (lesson[0].Contains("r_"))
                                     lesson[0] = lesson[0].Replace("r_", "r. ");
                                 if (lesson[0].Contains("j."))
                                     lesson[0] = lesson[0].Replace("j.", "j. ");
                                 if (lesson[0].Contains("u_hist.isp."))
                                     lesson[0] = lesson[0].Replace("u_hist.isp.", "historia i społeczeństwo");
+                                if (lesson[0].Contains("Fiz_inż"))
+                                    lesson[0] = lesson[0].Replace("Fiz_inż", "fizyka inż.");
                                 if (lesson[0].Contains("zaj.wych"))
                                     lesson[0] = lesson[0].Replace("zaj.wych", "zajęcia wychowawcze");
                                 string subject = lesson[0];
                                 if (subject.Contains('-'))
                                 {
                                     string[] grplesson = subject.Split('-');
+                                    if (grplesson[0].Contains("wf"))
+                                        grplesson[0] = lesson[0].Replace("wf", "W-f");
                                     if (grplesson[0].Contains("ang_k"))
                                         grplesson[0] = grplesson[0].Replace("ang_k", "angielski");
                                     if (grplesson[0].Contains("informat."))
@@ -186,8 +166,8 @@ namespace EkonomApp.ViewModels
                                 }
                                 else
                                 {
-
-                                    	
+                                    if (subject.Contains("wf"))
+                                    subject = subject.Replace("wf", "W-f");
                                     string classroom = lesson[2];
                                     Schedule.Add(new ScheduleList() { Hour = hours[i].InnerText, Subject = subject, Classroom = classroom, Visible= false, Width = 2 });
                                 }

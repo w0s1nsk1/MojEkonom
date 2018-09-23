@@ -10,50 +10,7 @@ namespace EkonomApp.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class OptionsPage : ContentPage
     {
-        public string IsFirstTime
-        {
-            get { return Settings.GeneralSettings; }
-            set
-            {
-                if (Settings.GeneralSettings == value)
-                    return;
-                Settings.GeneralSettings = value;
-                OnPropertyChanged();
-            }
-        }
-        public string ClassNumber
-        {
-            get { return Settings.ClassNumber; }
-            set
-            {
-                if (Settings.ClassNumber == value)
-                    return;
-                Settings.ClassNumber = value;
-                OnPropertyChanged();
-            }
-        }
-        public string Class
-        {
-            get { return Settings.Class; }
-            set
-            {
-                if (Settings.Class == value)
-                    return;
-                Settings.Class = value;
-                OnPropertyChanged();
-            }
-        }
-        public string LuckNumber
-        {
-            get { return Settings.Number; }
-            set
-            {
-                if (Settings.Number == value)
-                    return;
-                Settings.Number = value;
-                OnPropertyChanged();
-            }
-        }
+        public string Class = Xamarin.Forms.Application.Current.Properties["Class"].ToString();
         public OptionsPage()
         {
             InitializeComponent();
@@ -94,13 +51,12 @@ namespace EkonomApp.Views
                         Classes.SelectedIndex = i;
                     }
                 }
-                Number.Text = LuckNumber;
         }
-        public void Save_Item(object sender, EventArgs e)
+        public async void Save_Item(object sender, EventArgs e)
         {
-            LuckNumber = Number.Text;
-            Class = Classes.Items[Classes.SelectedIndex].ToLower();
-            ClassNumber = (Classes.SelectedIndex+1).ToString();
+            Xamarin.Forms.Application.Current.Properties["Class"] = Classes.Items[Classes.SelectedIndex].ToLower();
+            Xamarin.Forms.Application.Current.Properties["ClassNumber"] = (Classes.SelectedIndex+1).ToString();
+            await App.Current.SavePropertiesAsync();
             XFToast.ShortMessage("Pomyślnie zapisano!");
         }
     }

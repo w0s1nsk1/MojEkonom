@@ -19,36 +19,9 @@ namespace EkonomApp.Helpers
         }
 
         #region Setting Constants
-        private const string SettingsKey = "First_Run";
-        private const string SettingsKey1 = "Number";
         private const string SettingsKey2 = "Class";
         private const string SettingsKey3 = "ClassNumber";
-        private static readonly string SettingsDefault = "yes";
         #endregion
-
-
-        public static string GeneralSettings
-        {
-            get
-            {
-                return AppSettings.GetValueOrDefault(SettingsKey, SettingsDefault);
-            }
-            set
-            {
-                AppSettings.AddOrUpdateValue(SettingsKey, value);
-            }
-        }
-        public static string Number
-        {
-            get
-            {
-                return AppSettings.GetValueOrDefault(SettingsKey1, string.Empty);
-            }
-            set
-            {
-                AppSettings.AddOrUpdateValue(SettingsKey1, value);
-            }
-        }
         public static string ClassNumber
         {
             get
