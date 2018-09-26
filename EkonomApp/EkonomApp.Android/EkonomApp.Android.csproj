@@ -120,5 +120,11 @@
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\splashscreen.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="icon-refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\drawable\icon-refresh.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

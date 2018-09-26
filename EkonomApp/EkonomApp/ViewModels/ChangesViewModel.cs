@@ -22,7 +22,6 @@ namespace EkonomApp.ViewModels
             
             Change = new ObservableCollection<ChangeList>();
             Refresh = new Command(async () => await LoadChanges());
-            Refresh.Execute("");
         }
         
         async Task LoadChanges()
@@ -68,21 +67,27 @@ namespace EkonomApp.ViewModels
                     var htmlNodes = htmldoc.DocumentNode.SelectNodes("//p/span");
                     foreach (var node in htmlNodes)
                     {
-                        string line = node.InnerHtml;
-                        if (node.InnerHtml != "<br>")
+                        if (node.SelectSingleNode("//strike") != null)
                         {
-                            if (line.Contains("\r\n"))
-                                line = line.Replace("\r\n", " ");
-                            if (line.Contains(monthday + "."))
-                                line = line.Replace(monthday + ".", monthday);
-                            if (line.IndexOf(" l.") != -1)
-                            {
-                                string Class = line.Substring(0, line.IndexOf(" l."));
-                                Class = Class.Substring(4);
-                                line = line.Substring(line.IndexOf(" l.") + 1);
-                                if (Class.ToLower() == MyClass)
-                                    Change.Add(new ChangeList() { Changed = line });
-                            }
+                            node.SelectSingleNode("//strike").Remove();
+                        }
+                        string line = node.InnerText;
+                        if (node.InnerHtml!= "<br>")
+                        {
+                                if (line.Contains("\r\n"))
+                                    line = line.Replace("\r\n", " ");
+                                if (line.Contains(monthday + "."))
+                                    line = line.Replace(monthday + ".", monthday);
+                                if (line.IndexOf(" l.") != -1)
+                                {
+                                    string Class = line.Substring(0, line.IndexOf(" l."));
+                                    Class = Class.Substring(4);
+                                    line = line.Substring(line.IndexOf(" l.") + 1);
+                                    if (Class.ToLower() == MyClass)
+                                    {
+                                        Change.Add(new ChangeList() { Changed = line });
+                                    }
+                                }
                         }
                         else
                             break;
@@ -98,6 +103,10 @@ namespace EkonomApp.ViewModels
                     Change.Add(new ChangeList() { Changed = "Strona na jutrzejszy dzień zastępstw jest pusta 😞" });
                 }
                 IsBusy = false;
+            }
+            catch (System.Net.WebException)
+            {
+                Change.Add(new ChangeList() { Changed = "Brak połączenia z serwerem 🚫" });
             }
             catch (Exception ex)
             {

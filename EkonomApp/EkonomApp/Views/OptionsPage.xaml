@@ -5,7 +5,7 @@
              Title="Ustawienia">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Zapisz" Clicked="Save_Item">
+        <ToolbarItem Text="Zapisz" Clicked="LoadSchedule">
             <ToolbarItem.Icon>
                 <OnPlatform x:TypeArguments="FileImageSource">
                     <On Platform="UWP" Value="save.png"/>
@@ -22,7 +22,7 @@
         <ScrollView Grid.Row="1">
             <StackLayout Orientation="Vertical" Spacing="10">
                 <Label Text="Klasa:" />
-                <Picker x:Name="Classes" Title="Wybierz Klasę" WidthRequest="80"/>
+                <Picker x:Name="Classes" Title="Wybierz Klasę" />
             </StackLayout>
         </ScrollView>
     </Grid>

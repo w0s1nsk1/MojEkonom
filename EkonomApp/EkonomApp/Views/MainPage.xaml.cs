@@ -32,6 +32,9 @@ namespace EkonomApp.Views
                     case (int)MenuItemType.Schedule:
                         MenuPages.Add(id, new NavigationPage(new SchedulePage()));
                         break;
+                    case (int)MenuItemType.NewSchedule:
+                        MenuPages.Add(id, new NavigationPage(new NewSchedulePage()));
+                        break;
                     case (int)MenuItemType.Options:
                         MenuPages.Add(id, new NavigationPage(new OptionsPage()));
                         break;

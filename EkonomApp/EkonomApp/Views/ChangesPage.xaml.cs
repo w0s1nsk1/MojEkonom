@@ -14,6 +14,11 @@ namespace EkonomApp.Views
         {
             InitializeComponent();
         }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            ChangesList.RefreshCommand.Execute("");
+        }
     }
 }
 

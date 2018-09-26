@@ -7,6 +7,7 @@ namespace EkonomApp.Models
     public enum MenuItemType
     {
         Changes,
+        NewSchedule,
         Schedule,
         Options
     }

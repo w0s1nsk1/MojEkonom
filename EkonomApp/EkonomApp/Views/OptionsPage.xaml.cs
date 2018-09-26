@@ -1,7 +1,8 @@
 ﻿using EkonomApp.Helpers;
 using HtmlAgilityPack;
 using System;
-
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -52,12 +53,38 @@ namespace EkonomApp.Views
                     }
                 }
         }
-        public async void Save_Item(object sender, EventArgs e)
+        async void LoadSchedule(object sender, EventArgs e)
         {
-            Xamarin.Forms.Application.Current.Properties["Class"] = Classes.Items[Classes.SelectedIndex].ToLower();
-            Xamarin.Forms.Application.Current.Properties["ClassNumber"] = (Classes.SelectedIndex+1).ToString();
-            await App.Current.SavePropertiesAsync();
-            XFToast.ShortMessage("Pomyślnie zapisano!");
+            if ((Xamarin.Forms.Application.Current.Properties["Class"].ToString() != (Classes.SelectedIndex + 1).ToString()) && (Xamarin.Forms.Application.Current.Properties["ClassNumber"].ToString() != (Classes.SelectedIndex + 1).ToString()))
+            {
+                try
+                {
+                    string ClassNumber = (Classes.SelectedIndex + 1).ToString();
+                    string url = "http://www.zse.srem.pl/index.php?opcja=modules/plan_lekcji/pokaz_plan";
+                    HtmlWeb web = new HtmlWeb();
+                    HtmlDocument version = await Task.Run(() => web.Load(url));
+                    var versionNode = version.DocumentNode.SelectSingleNode("//div[@class='col-md-12']/a");
+                    url = versionNode.GetAttributeValue("href", "http://www.zse.srem.pl/plan_lekcji/b/index.html");
+                    string[] url_pieces = url.Substring(6).Split('/');
+                    string ScheduleLetter = url_pieces[3];
+                    App.Current.Properties["ScheduleLetter"] = ScheduleLetter;
+                    await App.Current.SavePropertiesAsync();
+                    url = url.Replace("index", "plany/o" + ClassNumber);
+                    HtmlDocument htmldoc = await Task.Run(() => web.Load(url));
+                    htmldoc.DocumentNode.InnerHtml = htmldoc.DocumentNode.SelectSingleNode("//table[@class='tabela']").InnerHtml;
+                    htmldoc.Save(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/plan.html");
+                    Xamarin.Forms.Application.Current.Properties["Class"] = Classes.Items[Classes.SelectedIndex].ToLower();
+                    Xamarin.Forms.Application.Current.Properties["ClassNumber"] = (Classes.SelectedIndex + 1).ToString();
+                    Xamarin.Forms.Application.Current.Properties["changed"] = true;
+                    await App.Current.SavePropertiesAsync();
+                    XFToast.ShortMessage("Pomyślnie zapisano!");
+                }
+                catch (Exception ex)
+                {
+                    XFToast.ShortMessage("Błąd podczas zapisywania.");
+                    Debug.WriteLine(ex);
+                }
+            }
         }
     }
 }

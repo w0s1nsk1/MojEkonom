@@ -7,7 +7,7 @@ using Xamarin.Forms.Xaml;
 namespace EkonomApp.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class CreatorPage : TabbedPage
+    public partial class CreatorPage : CarouselPage
     {
         public CreatorPage()
         {
