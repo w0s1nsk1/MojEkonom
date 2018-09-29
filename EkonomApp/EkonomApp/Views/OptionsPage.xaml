@@ -13,17 +13,14 @@
             </ToolbarItem.Icon>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
-    
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <ScrollView Grid.Row="1">
-            <StackLayout Orientation="Vertical" Spacing="10">
-                <Label Text="Klasa:" />
-                <Picker x:Name="Classes" Title="Wybierz Klasę" />
-            </StackLayout>
-        </ScrollView>
-    </Grid>
+    <StackLayout>
+        <StackLayout Padding="10" Orientation="Vertical" Spacing="10">
+            <Label Text="Klasa:" />
+            <Picker x:Name="Classes" Title="Wybierz Klasę" />
+        </StackLayout>
+        <StackLayout Padding="10" Orientation="Vertical" Spacing="10">
+            <Label Text="Domyślna strona:" />
+            <Picker x:Name="default_option" Title="Strony" />
+        </StackLayout>
+    </StackLayout>
 </ContentPage>

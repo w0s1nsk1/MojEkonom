@@ -30,12 +30,15 @@ namespace EkonomApp.Views
             Schedule = new ObservableCollection<ScheduleList>();
             Day.ItemsSource = Schedule;
             Refresh = new Command(async () => await LoadChanges());
+            Day.RefreshCommand = Refresh;
             Refresh.Execute("");
         }
+        
         public async Task LoadChanges()
         {
             try
             {
+                Schedule.Clear();
                 string DayTitle = App.Current.Properties["Day"].ToString();
                 HtmlDocument htmldoc = new HtmlDocument();
                 htmldoc.Load(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/plan.html");
@@ -72,16 +75,24 @@ namespace EkonomApp.Views
                                 if (lesson[0].Contains("j."))
                                     lesson[0] = lesson[0].Replace("j.", "j. ");
                                 if (lesson[0].Contains("ang_k"))
+                                {
                                     lesson[0] = lesson[0].Replace("ang_k", "angielski");
+                                }
                                 if (lesson[0].Contains("informat."))
+                                {
                                     lesson[0] = lesson[0].Replace("informat.", "informatyka");
+                                }
                                 if (lesson[0].Contains("niem_d"))
+                                {
                                     lesson[0] = lesson[0].Replace("niem_d", "niemiecki");
+                                }
                                 if (lesson[0].Contains('-'))
                                 {
                                     string[] grplesson = lesson[0].Split('-');
                                     if (grplesson[0].Contains("wf"))
+                                    {
                                         grplesson[0] = grplesson[0].Replace("wf", "W-f");
+                                    }
                                     if (!string.IsNullOrWhiteSpace(subject))
                                         subject = subject + "\n" + grplesson[0];
                                     else
@@ -103,6 +114,7 @@ namespace EkonomApp.Views
                         }
                         else
                         {
+                            string icon = string.Empty;
                             string[] lesson = node.InnerText.Split(' ');
                             if (lesson.Length != 3)
                             {
@@ -121,14 +133,22 @@ namespace EkonomApp.Views
                                 lesson[0] = lesson[0].Replace("zaj.wych", "zajęcia wychowawcze");
                             if (lesson[0].Contains("niem_d"))
                                 lesson[0] = lesson[0].Replace("niem_d", "niemiecki");
+                            if (lesson[0].Contains("ang_k"))
+                                lesson[0] = lesson[0].Replace("ang_k", "angielski");
+                            if (lesson[0].Contains("pprzedsięb"))
+                                lesson[0] = lesson[0].Replace("pprzedsięb", "p. przedsiębiorczości");
+                            if (lesson[0].Contains("e_dla_bezp"))
+                                lesson[0] = lesson[0].Replace("e_dla_bezp", "edukacja dla bezp.");
+                            if (lesson[0].Contains("kultura"))
+                                lesson[0] = lesson[0].Replace("kultura", "wiedza o kulturze");
+                            if (lesson[0].Contains("wos"))
+                                lesson[0] = lesson[0].Replace("wos", "wiedza o społ.");
                             string subject = lesson[0];
                             if (subject.Contains('-'))
                             {
                                 string[] grplesson = subject.Split('-');
                                 if (grplesson[0].Contains("wf"))
                                     grplesson[0] = grplesson[0].Replace("wf", "W-f");
-                                if (grplesson[0].Contains("ang_k"))
-                                    grplesson[0] = grplesson[0].Replace("ang_k", "angielski");
                                 if (grplesson[0].Contains("informat."))
                                     grplesson[0] = grplesson[0].Replace("informat.", "informatyka");
                                 subject = grplesson[0];

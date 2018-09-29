@@ -15,7 +15,11 @@ namespace EkonomApp.Views
         public OptionsPage()
         {
             InitializeComponent();
-                        string url = "http://www.zse.srem.pl/plan_lekcji/a/lista.html";
+            int ids = int.Parse(App.Current.Properties["startscreen"].ToString());
+            default_option.Items.Add("Zastępstwa");
+            default_option.Items.Add("Plan Lekcji");
+            default_option.SelectedIndex = ids;
+            string url = "http://www.zse.srem.pl/plan_lekcji/a/lista.html";
             string xpath = "//ul";
             HtmlWeb web = new HtmlWeb
             {
@@ -65,8 +69,8 @@ namespace EkonomApp.Views
                     HtmlDocument version = await Task.Run(() => web.Load(url));
                     var versionNode = version.DocumentNode.SelectSingleNode("//div[@class='col-md-12']/a");
                     url = versionNode.GetAttributeValue("href", "http://www.zse.srem.pl/plan_lekcji/b/index.html");
-                    string[] url_pieces = url.Substring(6).Split('/');
-                    string ScheduleLetter = url_pieces[3];
+                    string[] url_pieces = url.Substring(7).Split('/');
+                    string ScheduleLetter = url_pieces[2];
                     App.Current.Properties["ScheduleLetter"] = ScheduleLetter;
                     await App.Current.SavePropertiesAsync();
                     url = url.Replace("index", "plany/o" + ClassNumber);
@@ -74,7 +78,7 @@ namespace EkonomApp.Views
                     htmldoc.DocumentNode.InnerHtml = htmldoc.DocumentNode.SelectSingleNode("//table[@class='tabela']").InnerHtml;
                     htmldoc.Save(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/plan.html");
                     Xamarin.Forms.Application.Current.Properties["Class"] = Classes.Items[Classes.SelectedIndex].ToLower();
-                    Xamarin.Forms.Application.Current.Properties["ClassNumber"] = (Classes.SelectedIndex + 1).ToString();
+                    Xamarin.Forms.Application.Current.Properties["ClassNumber"] = Classes.SelectedIndex + 1;
                     Xamarin.Forms.Application.Current.Properties["changed"] = true;
                     await App.Current.SavePropertiesAsync();
                     XFToast.ShortMessage("Pomyślnie zapisano!");
@@ -84,6 +88,12 @@ namespace EkonomApp.Views
                     XFToast.ShortMessage("Błąd podczas zapisywania.");
                     Debug.WriteLine(ex);
                 }
+            }
+            if (int.Parse(Xamarin.Forms.Application.Current.Properties["startscreen"].ToString()) != default_option.SelectedIndex)
+            {
+                Xamarin.Forms.Application.Current.Properties["startscreen"] = default_option.SelectedIndex;
+                await App.Current.SavePropertiesAsync();
+                XFToast.ShortMessage("Pomyślnie zapisano!");
             }
         }
     }

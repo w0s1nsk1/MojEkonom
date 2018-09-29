@@ -19,13 +19,13 @@ namespace EkonomApp.Views
             menuItems = new List<HomeMenuItem>
             {
                 new HomeMenuItem {Id = MenuItemType.Changes, Title="Zastępstwa" },
-                new HomeMenuItem {Id = MenuItemType.NewSchedule, Title="Plan Lekcji" },
+                new HomeMenuItem {Id = MenuItemType.Schedule, Title="Plan Lekcji" },
                 new HomeMenuItem {Id = MenuItemType.Options, Title="Ustawienia" }
             };
 
             ListViewMenu.ItemsSource = menuItems;
-
-            ListViewMenu.SelectedItem = menuItems[0];
+            int ids = int.Parse(App.Current.Properties["startscreen"].ToString());
+            ListViewMenu.SelectedItem = menuItems[ids];
             ListViewMenu.ItemSelected += async (sender, e) =>
             {
                 if (e.SelectedItem == null)

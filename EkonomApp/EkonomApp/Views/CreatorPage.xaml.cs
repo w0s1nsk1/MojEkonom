@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -16,7 +17,7 @@ namespace EkonomApp.Views
             HtmlWeb web = new HtmlWeb();
             try
             {
-                HtmlDocument htmldoc = @web.Load(url);
+                HtmlDocument htmldoc = web.Load(url);
                 if (htmldoc != null)
                 {
                     var htmlNodes = htmldoc.DocumentNode.SelectNodes("//li/a[not(string-length(text())>3)]");
@@ -45,7 +46,7 @@ namespace EkonomApp.Views
             }
             catch (System.Net.WebException)
             {
-                DisplayAlert("Błąd", "Brak Dostępu do Internetu", "Ok");
+                Children[1] = new ErrorPage();
             }
         }
         
@@ -53,10 +54,31 @@ namespace EkonomApp.Views
         {
             if (Classes.SelectedIndex != -1)
             {
-                App.Current.Properties["Class"] = Classes.Items[Classes.SelectedIndex].ToLower();
-                App.Current.Properties["ClassNumber"] = (Classes.SelectedIndex + 1).ToString();
-                await App.Current.SavePropertiesAsync();
-                Xamarin.Forms.Application.Current.MainPage = new MainPage();
+                try
+                {
+                    string ClassNumber = (Classes.SelectedIndex + 1).ToString();
+                    string url = "http://www.zse.srem.pl/index.php?opcja=modules/plan_lekcji/pokaz_plan";
+                    HtmlWeb web = new HtmlWeb();
+                    HtmlDocument version = await Task.Run(() => web.Load(url));
+                    var versionNode = version.DocumentNode.SelectSingleNode("//div[@class='col-md-12']/a");
+                    url = versionNode.GetAttributeValue("href", "http://www.zse.srem.pl/plan_lekcji/b/index.html");
+                    string[] url_pieces = url.Substring(6).Split('/');
+                    string ScheduleLetter = url_pieces[3];
+                    url = url.Replace("index", "plany/o" + ClassNumber);
+                    HtmlDocument htmldoc = await Task.Run(() => web.Load(url));
+                    htmldoc.DocumentNode.InnerHtml = htmldoc.DocumentNode.SelectSingleNode("//table[@class='tabela']").InnerHtml;
+                    htmldoc.Save(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "/plan.html");
+                    App.Current.Properties["ScheduleLetter"] = ScheduleLetter;
+                    Xamarin.Forms.Application.Current.Properties["Class"] = Classes.Items[Classes.SelectedIndex].ToLower();
+                    Xamarin.Forms.Application.Current.Properties["ClassNumber"] = (Classes.SelectedIndex + 1).ToString();
+                    Xamarin.Forms.Application.Current.Properties["changed"] = false;
+                    await App.Current.SavePropertiesAsync();
+                    Xamarin.Forms.Application.Current.MainPage = new MainPage();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             }
             else
             {

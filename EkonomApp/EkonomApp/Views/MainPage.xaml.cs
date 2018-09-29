@@ -1,6 +1,7 @@
 ﻿using EkonomApp.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -14,10 +15,18 @@ namespace EkonomApp.Views
         public MainPage()
         {
             InitializeComponent();
-
+            int id = int.Parse(App.Current.Properties["startscreen"].ToString());
+            switch (id)
+            {
+                case (int)MenuItemType.Changes:
+                    Detail = new NavigationPage(new ChangesPage());
+                    break;
+                case (int)MenuItemType.Schedule:
+                    Detail = new NavigationPage(new NewSchedulePage());
+                    break;
+            }
             MasterBehavior = MasterBehavior.Popover;
-
-            MenuPages.Add((int)MenuItemType.Changes, (NavigationPage) Detail);
+            MenuPages.Add(id, (NavigationPage) Detail);
         }
 
         public async Task NavigateFromMenu(int id)
@@ -30,9 +39,6 @@ namespace EkonomApp.Views
                         MenuPages.Add(id, new NavigationPage(new ChangesPage()));
                         break;
                     case (int)MenuItemType.Schedule:
-                        MenuPages.Add(id, new NavigationPage(new SchedulePage()));
-                        break;
-                    case (int)MenuItemType.NewSchedule:
                         MenuPages.Add(id, new NavigationPage(new NewSchedulePage()));
                         break;
                     case (int)MenuItemType.Options:
@@ -40,7 +46,6 @@ namespace EkonomApp.Views
                         break;
                 }
             }
-
             var newPage = MenuPages[id];
 
             if (newPage != null && Detail != newPage)
@@ -48,7 +53,7 @@ namespace EkonomApp.Views
                 Detail = newPage;
 
                 if (Device.RuntimePlatform == Device.Android)
-                    await Task.Delay(100);
+                    await Task.Delay(0);
 
                 IsPresented = false;
             }

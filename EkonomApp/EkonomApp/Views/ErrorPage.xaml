@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EkonomApp.Views.ErrorPage">
+    <StackLayout>
+        <Image Scale="0.6" Source="Resources/icon.png" />
+        <Label FontSize="Large" Text='Witaj w aplikacji Mój Ekonom!' VerticalOptions="CenterAndExpand" HorizontalOptions="Center"/>
+        <Label FontSize="Small" Text='Brak połączenia z serwerem 🚫' VerticalOptions="CenterAndExpand" HorizontalOptions="Center"/>
+        <Button TextColor="White" Text="Wyjdź" BackgroundColor="#FF5A5A" Clicked="Button_Clicked" VerticalOptions="End"/>
+    </StackLayout>
+</ContentPage>

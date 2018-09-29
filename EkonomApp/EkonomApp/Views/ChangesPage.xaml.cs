@@ -16,8 +16,7 @@ namespace EkonomApp.Views
         }
         protected override void OnAppearing()
         {
-            base.OnAppearing();
-            ChangesList.RefreshCommand.Execute("");
+            ChangesList.RefreshCommand.Execute(null);
         }
     }
 }

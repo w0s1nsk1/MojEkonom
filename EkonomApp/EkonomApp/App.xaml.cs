@@ -17,6 +17,11 @@ namespace EkonomApp
             {
                 // if this is the first time, set it to "No" and load the
                 // Main Page ,which will show at the first time use
+                if (!Xamarin.Forms.Application.Current.Properties.ContainsKey("startscreen"))
+                {
+                    Xamarin.Forms.Application.Current.Properties["startscreen"] = 0;
+                    Current.SavePropertiesAsync();
+                }
                 try
                 {
                     string ClassNumber = App.Current.Properties["ClassNumber"].ToString();
@@ -30,6 +35,7 @@ namespace EkonomApp
                     if (!App.Current.Properties.ContainsKey("ScheduleLetter"))
                     {
                         App.Current.Properties["ScheduleLetter"] = ScheduleLetter;
+                        App.Current.Properties["changed"] = false;
                         Current.SavePropertiesAsync();
                         url = url.Replace("index", "plany/o" + ClassNumber);
                         HtmlDocument htmldoc = web.Load(url);

@@ -14,8 +14,10 @@
         <StackLayout>
             <Image Scale="0.6" Source="Resources/icon.png"/>
             <Label FontSize="Large" Text='W jakiej klasie jesteś?' VerticalOptions="CenterAndExpand" HorizontalOptions="Center"/>
-            <Label FontSize="Small" Text='Klasa:' VerticalOptions="CenterAndExpand" HorizontalOptions="Start"/>
-            <Picker x:Name="Classes" Title="Wybierz swoją klasę" VerticalOptions="End"/>
+            <StackLayout Padding="10">
+                <Label FontSize="Small" Text='Klasa:' VerticalOptions="CenterAndExpand" HorizontalOptions="Start"/>
+                <Picker x:Name="Classes" Title="Wybierz swoją klasę" VerticalOptions="End"/>
+            </StackLayout>
             <Button TextColor="White" Text="Rozpocznij" BackgroundColor="#0d8aee" Clicked="Next_Clicked" VerticalOptions="End"/>
         </StackLayout>
     </ContentPage>
