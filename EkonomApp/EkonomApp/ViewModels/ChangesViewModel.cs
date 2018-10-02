@@ -56,10 +56,10 @@ namespace EkonomApp.ViewModels
                 };
                 HtmlDocument htmldoc = await Task.Run(() => web.Load(url));
                 var html1 = htmldoc.DocumentNode.SelectNodes("//span[contains(text(),'Zastępstwa')]");
+                Title = "Zastępstwa na " + day + "." + monthday;
                 if (html1 != null)
                 {
                     string html1_title = html1[0].InnerText;
-                    Title = "Zastępstwa na " + day + "." + monthday;
                     if (html1_title.Contains(day + "." + monthday))
                     {
                         var htmlNodes = htmldoc.DocumentNode.SelectNodes("//p//span");
@@ -102,7 +102,7 @@ namespace EkonomApp.ViewModels
                 }
                 else
                 {
-                    Change.Add(new ChangeList() { Changed = "Strona na jutrzejszy dzień zastępstw jest pusta 😞" });
+                    Change.Add(new ChangeList() { Changed = "Strona zastępstw na ten dzień jest pusta 😞" });
                 }
                 IsBusy = false;
             }
