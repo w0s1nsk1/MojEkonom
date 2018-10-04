@@ -1,8 +1,6 @@
 ﻿using Xamarin.Forms.Xaml;
 using EkonomApp.Views;
-using EkonomApp.Helpers;
 using HtmlAgilityPack;
-using System.Linq;
 using System;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
@@ -17,11 +15,6 @@ namespace EkonomApp
             {
                 // if this is the first time, set it to "No" and load the
                 // Main Page ,which will show at the first time use
-                if (!Xamarin.Forms.Application.Current.Properties.ContainsKey("startscreen"))
-                {
-                    Xamarin.Forms.Application.Current.Properties["startscreen"] = 0;
-                    Current.SavePropertiesAsync();
-                }
                 try
                 {
                     string ClassNumber = App.Current.Properties["ClassNumber"].ToString();

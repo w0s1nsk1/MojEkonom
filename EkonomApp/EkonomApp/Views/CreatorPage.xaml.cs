@@ -72,6 +72,7 @@ namespace EkonomApp.Views
                     Xamarin.Forms.Application.Current.Properties["Class"] = Classes.Items[Classes.SelectedIndex].ToLower();
                     Xamarin.Forms.Application.Current.Properties["ClassNumber"] = (Classes.SelectedIndex + 1).ToString();
                     Xamarin.Forms.Application.Current.Properties["changed"] = false;
+                    Xamarin.Forms.Application.Current.Properties["startscreen"] = 0;
                     await App.Current.SavePropertiesAsync();
                     Xamarin.Forms.Application.Current.MainPage = new MainPage();
                 }
