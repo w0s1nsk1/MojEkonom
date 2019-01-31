@@ -33,15 +33,17 @@ namespace EkonomApp.ViewModels
             
                 Change.Clear();
                 DateTime date = DateTime.Today;
+                if (App.Current.Properties["ChangeState"].ToString() != "2")
+                {
+                    Title = App.Current.Properties["ChangeState"].ToString();
+                }
+                int state = Int32.Parse(Title);
+                date = date.AddDays(state);
                 var weekday = (int)date.DayOfWeek;
-                if ((int)date.DayOfWeek >= 5)
+                if ((int)date.DayOfWeek > 5)
                 {
                     int ile = 8 - (int)date.DayOfWeek;
                     date = date.AddDays(ile);
-                }
-                else
-                {
-                    date = date.AddDays(1);
                 }
                 string MyClass = App.Current.Properties["Class"].ToString();
                 string day = date.Day.ToString();
@@ -51,15 +53,17 @@ namespace EkonomApp.ViewModels
                 string url = "http://www.zse.srem.pl/index.php?opcja=modules/zastepstwa/view_id&id=" + (int)date.DayOfWeek;
                 HtmlWeb web = new HtmlWeb
                 {
-                    CachePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    CachePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"/Change"+state,
                     UsingCache = true
                 };
                 HtmlDocument htmldoc = await Task.Run(() => web.Load(url));
                 var html1 = htmldoc.DocumentNode.SelectNodes("//span[contains(text(),'Zastępstwa')]");
-                Title = "Zastępstwa na " + day + "." + monthday;
                 if (html1 != null)
                 {
                     string html1_title = html1[0].InnerText;
+          
+                    html1_title = html1_title.Replace(" ", "");
+                    Debug.WriteLine(html1_title);
                     if (html1_title.Contains(day + "." + monthday))
                     {
                         var htmlNodes = htmldoc.DocumentNode.SelectNodes("//p//span");
@@ -104,7 +108,6 @@ namespace EkonomApp.ViewModels
                 {
                     Change.Add(new ChangeList() { Changed = "Strona zastępstw na ten dzień jest pusta 😞" });
                 }
-                IsBusy = false;
             }
             catch (System.Net.WebException)
             {
@@ -114,6 +117,7 @@ namespace EkonomApp.ViewModels
             {
                 Debug.WriteLine(ex);
             }
+            IsBusy = false;
         }
     }
 }

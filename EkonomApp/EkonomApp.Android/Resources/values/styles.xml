@@ -8,7 +8,13 @@
     <item name="android:backgroundDimEnabled">true</item>
   </style>
   <style name="MainTheme" parent="MainTheme.Base">
+    <item name="android:colorPressedHighlight">@color/colorSelected</item>
+    <item name="android:colorLongPressedHighlight">@color/colorSelected</item>
+    <item name="android:colorFocusedHighlight">@color/colorSelected</item>
+    <item name="android:colorActivatedHighlight">@color/colorSelected</item>
+    <item name="android:activatedBackgroundIndicator">@color/colorSelected</item>
   </style>
+  
   <!-- Base theme applied no matter what API -->
   <style name="MainTheme.Base" parent="Theme.AppCompat.Light.DarkActionBar">
     <!--If you are using revision 22.1 please use just windowNoTitle. Without android:-->

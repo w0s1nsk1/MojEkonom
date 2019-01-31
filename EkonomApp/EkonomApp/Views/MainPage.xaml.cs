@@ -19,7 +19,7 @@ namespace EkonomApp.Views
             switch (id)
             {
                 case (int)MenuItemType.Changes:
-                    Detail = new NavigationPage(new ChangesPage());
+                    Detail = new NavigationPage(new NewChangesPage());
                     break;
                 case (int)MenuItemType.Schedule:
                     Detail = new NavigationPage(new NewSchedulePage());
@@ -36,7 +36,7 @@ namespace EkonomApp.Views
                 switch (id)
                 {
                     case (int)MenuItemType.Changes:
-                        MenuPages.Add(id, new NavigationPage(new ChangesPage()));
+                        MenuPages.Add(id, new NavigationPage(new NewChangesPage()));
                         break;
                     case (int)MenuItemType.Schedule:
                         MenuPages.Add(id, new NavigationPage(new NewSchedulePage()));
